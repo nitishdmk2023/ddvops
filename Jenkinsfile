@@ -1,17 +1,33 @@
 pipeline {
-    agent any 
+    agent {
+        kubernetes {
+            yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: devops-tools
+    image: alpine/k8s:1.29.2  # This image has git, kubectl, and helm pre-installed
+    command:
+    - cat
+    tty: true
+'''
+        }
+    }
     stages {
-        stage('Install Tools') {
+        stage('Checkout') {
             steps {
-                sh 'curl -LO "https://k8s.io(curl -L -s https://k8s.io)/bin/linux/amd64/kubectl"'
-                sh 'chmod +x kubectl'
+                container('devops-tools') {
+                    checkout scm
+                }
             }
         }
-        stage('Hello DevOps') {
+        stage('Verify Cluster') {
             steps {
-                echo 'Pipeline triggered successfully!'
-                // Use ./kubectl since it is in the current folder
-                sh './kubectl get nodes' 
+                container('devops-tools') {
+                    echo 'Checking Kubernetes Nodes...'
+                    sh 'kubectl get nodes'
+                }
             }
         }
     }
