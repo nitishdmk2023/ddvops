@@ -1,0 +1,42 @@
+cat <<EOF > /vagrant/santoshi-app.py
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>For Santoshi ❤️</title>
+    <style>
+        body { background: #fff5f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding-top: 50px; }
+        .heart { color: #e74c3c; font-size: 100px; animation: beat .25s infinite alternate; }
+        @keyframes beat { to { transform: scale(1.2); } }
+        .letter { background: white; width: 60%; margin: auto; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { color: #d63031; }
+        p { font-size: 20px; line-height: 1.6; color: #2d3436; }
+    </style>
+</head>
+<body>
+    <div class="heart">❤️</div>
+    <div class="letter">
+        <h1>To my dearest Santoshi,</h1>
+        <p>This little portal was built for you to acknowledge my love to yoy I've been a master fucking & sucking your aam ka rasila chuttt 🚀</p>
+        <p>aane de bhusbanewar<b>jhun juhna bannaana hai.</b></p>
+        <p>You are the <b>Control Plane</b> of my life. Happy learning! ❤️</p>
+        <p><i>- Your Nitish</i></p>
+    </div>
+</body>
+</html>
+"""
+
+@app.route('/')
+def home():
+    auth = request.authorization
+    if not auth or auth.password != 'santoshi':
+        return 'Unauthorized', 401, {'WWW-Authenticate': 'Basic realm="Login to Santoshi's Portal"'}
+    return render_template_string(HTML_TEMPLATE)
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=80)
+EOF
