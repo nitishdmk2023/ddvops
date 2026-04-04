@@ -26,7 +26,7 @@ spec:
             steps {
                 container('devops-tools') {
                     echo 'Checking Kubernetes Nodes...'
-                    sh 'kubectl get nodes'
+                    sh 'kubectl get pods -A'
                 }
             }
         }
